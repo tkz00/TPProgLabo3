@@ -216,6 +216,6 @@ function AdministrarValidacionesLogin() {
     }
 }
 function AdministrarModificar(dni) {
-    document.getElementById("modificar").value = dni;
-    document.getElementById("frmModificar").submit();
+    document.getElementById('modificar').value = dni;
+    document.getElementById('frmModificar').submit();
 }

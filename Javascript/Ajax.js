@@ -105,7 +105,7 @@ function GuardarEmpleado() {
                     newEmpleado += document.getElementById('txtNombre').value + " - ";
                     newEmpleado += document.getElementById('txtApellido').value + " - ";
                     newEmpleado += document.getElementById('cboSexo').value + " - ";
-                    newEmpleado += document.getElementById('numLegajo').value + " - ";
+                    newEmpleado += document.getElementById('numLegajo').value + " - $";
                     newEmpleado += document.getElementById('numSueldo').value + " - ";
                     newEmpleado += Turno_1 + " - ";
                     newEmpleado += fotoPath;

@@ -103,7 +103,7 @@
         }
         .links
         {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
             margin: 0 5rem;
         }

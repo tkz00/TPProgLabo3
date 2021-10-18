@@ -1,3 +1,7 @@
+<?php
+    include_once "../Model/Fabrica.php";
+    include_once "ValidarSesion.php";
+?>
 <!DOCTYPE html>
 <html>
     <style>
@@ -44,8 +48,6 @@
         <hr>
             
             <?php
-                include_once "../Model/Fabrica.php";
-                include_once "ValidarSesion.php";
                 
                 if(file_exists('../Empleados.txt'))
                 {
@@ -71,13 +73,13 @@
 
         <hr>
 
-        <form method="POST" action="../Views/index.php" name="frmModificar" id="frmModificar">
+        <form method="POST" action="../Views/Index.php" name="frmModificar" id="frmModificar">
             <input type="hidden" name="modificar" id="modificar">
         </form>
 
         </div>
 
-        <a href="/Views/Index.php">Volver al formulario</a>
+        <a href="../Views/Index.php">Volver al formulario</a>
         <br>
         <a href="CerrarSesion.php">Cerrar sesión</a>
         <br>

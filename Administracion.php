@@ -21,7 +21,8 @@
                 
                 if(!file_exists('Fotos/' . $_FILES['Foto']['name']))
                 {
-                    $destino = 'Fotos/' . $_POST['dni'] . '-' . $_POST['Apellido'] . '.' . pathinfo($_FILES['Foto']['name'], PATHINFO_EXTENSION);
+                    $apellidoFormateado = preg_replace('/\s+/', '_', $_POST['Apellido']);
+                    $destino = 'Fotos/' . $_POST['dni'] . '-' . $apellidoFormateado . '.' . pathinfo($_FILES['Foto']['name'], PATHINFO_EXTENSION);
                     
                     $Empleado = new Empleado($_POST['Nombre'], $_POST['Apellido'], $_POST['dni'], $_POST['Sexo'], $_POST['Legajo'], $_POST['Sueldo'], $_POST['Turno'], $destino);
                     
@@ -58,7 +59,7 @@
     if($Estado)
     {
         $Fabrica->GuardarEnArchivo("Empleados.txt");
-        echo '<a href="../Backend/Mostrar.php">Mostrar empleados</a>';
+        echo '<a href="./Backend/Mostrar.php">Mostrar empleados</a>';
     }
     else
     {

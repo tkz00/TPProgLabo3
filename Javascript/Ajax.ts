@@ -154,7 +154,7 @@ function GuardarEmpleado()
                     newEmpleado += (<HTMLFormElement>document.getElementById('txtNombre')).value + " - ";
                     newEmpleado += (<HTMLFormElement>document.getElementById('txtApellido')).value + " - ";
                     newEmpleado += (<HTMLFormElement>document.getElementById('cboSexo')).value + " - ";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('numLegajo')).value + " - ";
+                    newEmpleado += (<HTMLFormElement>document.getElementById('numLegajo')).value + " - $";
                     newEmpleado += (<HTMLFormElement>document.getElementById('numSueldo')).value + " - ";
                     newEmpleado += Turno + " - ";
                     newEmpleado += fotoPath;

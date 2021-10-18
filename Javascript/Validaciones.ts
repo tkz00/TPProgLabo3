@@ -303,3 +303,9 @@ function AdministrarValidacionesLogin() : void
         (<HTMLFormElement>document.getElementById("frmLogin")).submit();
     }
 }
+
+function AdministrarModificar(dni : number)
+{
+    (<HTMLFormElement>document.getElementById('modificar')).value = dni;
+    (<HTMLFormElement>document.getElementById('frmModificar')).submit();
+}
