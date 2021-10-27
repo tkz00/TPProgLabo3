@@ -1,5 +1,6 @@
 window.addEventListener("load", function () {
     MostrarEmpleados();
+    document.getElementById('btnEnviar').setAttribute('onclick', 'GuardarEmpleado()');
 });
 function MostrarEmpleados() {
     var xhttp = new XMLHttpRequest();
@@ -22,7 +23,6 @@ function MostrarEmpleados() {
                     var dni = element.getAttribute('onclick').substring(element.getAttribute('onclick').indexOf('(') + 1, element.getAttribute('onclick').indexOf(')'));
                     element.setAttribute('onclick', 'modificarEmpleado(' + dni + ', this)');
                 });
-                document.getElementById('btnEnviar').setAttribute('onclick', 'GuardarEmpleado()');
             }
         }
     };
@@ -75,54 +75,56 @@ function Limpiar() {
 function GuardarEmpleado() {
     var Valido = AdministrarValidaciones();
     if (Valido) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open('post', '../Administracion.php', true);
-        xhttp.setRequestHeader("enctype", "multipart/form-data");
-        var Turno_1 = "";
-        var ele = document.getElementsByName("Turno");
-        for (var i = 0; i < ele.length; i++) {
-            if (ele[i].checked) {
-                Turno_1 = ele[i].value;
-            }
-        }
-        var form = new FormData();
-        form.append("Nombre", document.getElementById('txtNombre').value);
-        form.append("Apellido", document.getElementById('txtApellido').value);
-        form.append("dni", document.getElementById('numDni').value);
-        form.append("Sexo", document.getElementById('cboSexo').value);
-        form.append("Legajo", document.getElementById('numLegajo').value);
-        form.append("Sueldo", document.getElementById('numSueldo').value);
-        form.append("Turno", Turno_1);
-        form.append('Foto', document.getElementById('Foto').files[0], document.getElementById('Foto').value);
-        form.append("hdnModificar", document.getElementById('hdnModificar').value);
-        xhttp.send(form);
-        xhttp.onreadystatechange = function () {
-            if (xhttp.readyState === 4) {
-                if (xhttp.status === 200) {
-                    var fotoPath = '../Fotos/' + document.getElementById('numDni').value + '-' + document.getElementById('txtApellido').value + '.' + document.getElementById('Foto').value.split('.')[1];
-                    var newEmpleado = '<span style="display:flex;justify-content:space-between;align-items:center;">';
-                    newEmpleado += document.getElementById('numDni').value + " - ";
-                    newEmpleado += document.getElementById('txtNombre').value + " - ";
-                    newEmpleado += document.getElementById('txtApellido').value + " - ";
-                    newEmpleado += document.getElementById('cboSexo').value + " - ";
-                    newEmpleado += document.getElementById('numLegajo').value + " - $";
-                    newEmpleado += document.getElementById('numSueldo').value + " - ";
-                    newEmpleado += Turno_1 + " - ";
-                    newEmpleado += fotoPath;
-                    newEmpleado += '<img src="' + fotoPath + '" width="90px" height="90px">';
-                    newEmpleado += '<a href="javascript:void(0);" onclick="eliminarEmpleado(' + document.getElementById('numLegajo').value + ', this)" class="eliminar">Eliminar</a>';
-                    newEmpleado += '<input type="button" value="Modificar" class="modificar" onclick="modificarEmpleado(' + document.getElementById('numDni').value + ', this)">';
-                    newEmpleado += '</span>';
-                    document.getElementsByClassName('empleados')[0].insertAdjacentHTML('beforeend', newEmpleado);
+        var parameters = new FormData();
+        parameters.append("Nombre", document.getElementById('txtNombre').value);
+        parameters.append("Apellido", document.getElementById('txtApellido').value);
+        parameters.append("dni", document.getElementById('numDni').value);
+        parameters.append("Sexo", document.getElementById('cboSexo').value);
+        parameters.append("Legajo", document.getElementById('numLegajo').value);
+        parameters.append("Sueldo", document.getElementById('numSueldo').value);
+        parameters.append("Turno", $('input:radio[name="Turno"]:checked').val().toString());
+        parameters.append('Foto', document.getElementById('Foto').files[0], document.getElementById('Foto').value);
+        parameters.append("hdnModificar", document.getElementById('hdnModificar').value);
+        $.ajax({
+            type: "POST",
+            url: '../Administracion.php',
+            data: parameters,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                // console.log(data);
+                if (data == 1) {
+                    MostrarEmpleados();
                 }
+                else if (data == 0) {
+                    alert('No se ha podido agregar el empleado a la fabrica.');
+                }
+                else if (data == 2) {
+                    alert('La imagen seleccionada es demasiado grande, no se ha podido agregar el empleado a la fabrica.');
+                }
+                // let fotoPath = '../Fotos/' + (<HTMLFormElement>document.getElementById('numDni')).value + '-' + (<HTMLFormElement>document.getElementById('txtApellido')).value + '.' + (<HTMLFormElement>document.getElementById('Foto')).value.split('.')[1];
+                // let newEmpleado = '<span style="display:flex;justify-content:space-between;align-items:center;">';
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numDni')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('txtNombre')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('txtApellido')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('cboSexo')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numLegajo')).value + " - $";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numSueldo')).value + " - ";
+                // newEmpleado += Turno + " - ";
+                // newEmpleado += fotoPath;
+                // newEmpleado += '<img src="' + fotoPath + '" width="90px" height="90px">';
+                // newEmpleado += '<a href="javascript:void(0);" onclick="eliminarEmpleado(' + (<HTMLFormElement>document.getElementById('numLegajo')).value + ', this)" class="eliminar">Eliminar</a>';
+                // newEmpleado += '<input type="button" value="Modificar" class="modificar" onclick="modificarEmpleado(' + (<HTMLFormElement>document.getElementById('numDni')).value + ', this)">';
+                // newEmpleado += '</span>';
+                // (<HTMLFormElement>document.getElementsByClassName('empleados')[0]).insertAdjacentHTML('beforeend', newEmpleado);
             }
-        };
-        if (document.getElementById('hdnModificar').value) {
+        });
+        if ($('#hdnModificar').val() === 'true' || $('#hdnModificar').val() === '1') {
             var empleados = document.getElementsByClassName('empleados')[0].children;
-            for (var i_1 = 0; i_1 < empleados.length; i_1++) {
-                var dni = empleados[i_1].firstChild.textContent;
+            for (var i = 0; i < empleados.length; i++) {
+                var dni = empleados[i].firstChild.textContent;
                 if ((dni === null || dni === void 0 ? void 0 : dni.substr(0, dni.indexOf(' '))) == document.getElementById('numDni').value) {
-                    empleados[i_1].remove();
+                    empleados[i].remove();
                     break;
                 }
             }

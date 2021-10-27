@@ -83,6 +83,7 @@
         </style>
         <head>
             <meta charset="UTF-8" />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <title><?php if($Modificar){ echo 'HTML 5 - Modificar Empleado'; } else { echo 'HTML 5 - Alta de Empleado'; } ?></title>
         </head>
 
@@ -123,6 +124,8 @@
                 <input type="hidden" id="hdnModificar" name="hdnModificar" value="<?php echo $Modificar ?>">
 
             </form>
+
+            <div id="links"></div>
 
             <script src="../Javascript/Funciones.js"></script>
             <script src="../Javascript/index.js"></script>

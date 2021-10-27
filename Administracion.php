@@ -3,7 +3,8 @@
     include_once "Model/Empleado.php";
     include_once "Model/Fabrica.php";
 
-    $Estado = false;
+    //Estado 0 = error, 1 = OK, 2 = archivo muy grande
+    $Estado = 0;
 
     //Validación imagen
     if(substr($_FILES['Foto']['type'], 0, strpos($_FILES['Foto']['type'], "/")) == "image")
@@ -30,7 +31,7 @@
 
                     $Fabrica->TraerDeArchivo("Empleados.txt");
 
-                    if($_POST['hdnModificar'])
+                    if($_POST['hdnModificar'] === true || $_POST['hdnModificar'] === 'true' || $_POST['hdnModificar'] === '1')
                     {
                         foreach ($Fabrica->GetEmpleados() as $auxEmpleado)
                         {
@@ -47,23 +48,33 @@
                         }
                     }
                 
-                    $Estado = $Fabrica->AgregarEmpleado($Empleado);
+                    if($Fabrica->AgregarEmpleado($Empleado))
+                    {
+                        $Estado = 1;
+                    }
 
                     move_uploaded_file($_FILES['Foto']['tmp_name'], $destino);
                 }
+            }
+            else
+            {
+                $Estado = 2;
             }
         }
     }
 
 
-    if($Estado)
+    if($Estado == 1)
     {
         $Fabrica->GuardarEnArchivo("Empleados.txt");
-        echo '<a href="./Backend/Mostrar.php">Mostrar empleados</a>';
+        // echo '<a href="./Backend/Mostrar.php">Mostrar empleados</a>';
     }
     else
     {
-        echo "<script type='text/javascript'>alert('No se ha podido agregar el empleado a la fabrica.');</script>";
-        echo '<a href="./Views/Index.php">Volver al formulario</a>';
+        // echo "<script type='text/javascript'>alert('No se ha podido agregar el empleado a la fabrica.');</script>";
+        // echo '<a href="./Views/Index.php">Volver al formulario</a>';
     }
+
+    echo json_encode($Estado);
+
 ?>

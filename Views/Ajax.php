@@ -110,6 +110,7 @@
     </style>
     <head>
         <meta charset="UTF-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <title>Parte 6 - Ajax</title>
     </head>
     <body>
@@ -155,6 +156,7 @@
         <div class="links">
             <a href="../Backend/Mostrar.php">Mostrar empleados</a>
             <a href="Index.php">Formulario Carga</a>
+            <
             <a href="../Backend/CerrarSesion.php">Cerrar sesión</a>
         </div>
 

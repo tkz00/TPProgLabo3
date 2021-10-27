@@ -1,6 +1,7 @@
 window.addEventListener("load", function()
 {
     MostrarEmpleados();
+    (<HTMLFormElement>document.getElementById('btnEnviar')).setAttribute('onclick', 'GuardarEmpleado()');
 })
 
 function MostrarEmpleados()
@@ -34,7 +35,6 @@ function MostrarEmpleados()
                     element.setAttribute('onclick', 'modificarEmpleado(' + dni +', this)');
                 });
 
-                (<HTMLFormElement>document.getElementById('btnEnviar')).setAttribute('onclick', 'GuardarEmpleado()');
             }
         }
     };
@@ -113,62 +113,60 @@ function GuardarEmpleado()
 
     if(Valido)
     {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open('post', '../Administracion.php', true);
+        let parameters: FormData = new FormData();
 
-        xhttp.setRequestHeader("enctype","multipart/form-data");
+        parameters.append("Nombre", (<HTMLFormElement>document.getElementById('txtNombre')).value);
+        parameters.append("Apellido", (<HTMLFormElement>document.getElementById('txtApellido')).value);
+        parameters.append("dni", (<HTMLFormElement>document.getElementById('numDni')).value);
+        parameters.append("Sexo", (<HTMLFormElement>document.getElementById('cboSexo')).value);
+        parameters.append("Legajo", (<HTMLFormElement>document.getElementById('numLegajo')).value);
+        parameters.append("Sueldo", (<HTMLFormElement>document.getElementById('numSueldo')).value);
+        parameters.append("Turno", $('input:radio[name="Turno"]:checked').val()!.toString());
+        parameters.append('Foto', (<HTMLFormElement>document.getElementById('Foto')).files[0], (<HTMLFormElement>document.getElementById('Foto')).value);
+        parameters.append("hdnModificar", (<HTMLFormElement>document.getElementById('hdnModificar')).value);
 
-        let Turno = "";
-        var ele = document.getElementsByName("Turno");
-        for(var i=0;i<ele.length;i++)
-        {
-            if((<HTMLFormElement>ele[i]).checked)
-            {
-                Turno = (<HTMLFormElement>ele[i]).value;
-            }
-        }
+        $.ajax({
+            type: "POST",
+            url: '../Administracion.php',
+            data: parameters,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                // console.log(data);
 
-        let form: FormData = new FormData();
-
-        form.append("Nombre", (<HTMLFormElement>document.getElementById('txtNombre')).value);
-        form.append("Apellido", (<HTMLFormElement>document.getElementById('txtApellido')).value);
-        form.append("dni", (<HTMLFormElement>document.getElementById('numDni')).value);
-        form.append("Sexo", (<HTMLFormElement>document.getElementById('cboSexo')).value);
-        form.append("Legajo", (<HTMLFormElement>document.getElementById('numLegajo')).value);
-        form.append("Sueldo", (<HTMLFormElement>document.getElementById('numSueldo')).value);
-        form.append("Turno", Turno);
-        form.append('Foto', (<HTMLFormElement>document.getElementById('Foto')).files[0], (<HTMLFormElement>document.getElementById('Foto')).value);
-        form.append("hdnModificar", (<HTMLFormElement>document.getElementById('hdnModificar')).value);
-
-        xhttp.send(form);
-
-        xhttp.onreadystatechange = (): void =>
-        {
-            if(xhttp.readyState === 4)
-            {
-                if(xhttp.status === 200)
+                if(data == 1)
                 {
-                    let fotoPath = '../Fotos/' + (<HTMLFormElement>document.getElementById('numDni')).value + '-' + (<HTMLFormElement>document.getElementById('txtApellido')).value + '.' + (<HTMLFormElement>document.getElementById('Foto')).value.split('.')[1];
-                    let newEmpleado = '<span style="display:flex;justify-content:space-between;align-items:center;">';
-                    newEmpleado += (<HTMLFormElement>document.getElementById('numDni')).value + " - ";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('txtNombre')).value + " - ";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('txtApellido')).value + " - ";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('cboSexo')).value + " - ";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('numLegajo')).value + " - $";
-                    newEmpleado += (<HTMLFormElement>document.getElementById('numSueldo')).value + " - ";
-                    newEmpleado += Turno + " - ";
-                    newEmpleado += fotoPath;
-                    newEmpleado += '<img src="' + fotoPath + '" width="90px" height="90px">';
-                    newEmpleado += '<a href="javascript:void(0);" onclick="eliminarEmpleado(' + (<HTMLFormElement>document.getElementById('numLegajo')).value + ', this)" class="eliminar">Eliminar</a>';
-                    newEmpleado += '<input type="button" value="Modificar" class="modificar" onclick="modificarEmpleado(' + (<HTMLFormElement>document.getElementById('numDni')).value + ', this)">';
-                    newEmpleado += '</span>';
-
-                    (<HTMLFormElement>document.getElementsByClassName('empleados')[0]).insertAdjacentHTML('beforeend', newEmpleado);
+                    MostrarEmpleados();
                 }
-            }
-        };
+                else if(data == 0)
+                {
+                    alert('No se ha podido agregar el empleado a la fabrica.');
+                }
+                else if(data == 2)
+                {
+                    alert('La imagen seleccionada es demasiado grande, no se ha podido agregar el empleado a la fabrica.');
+                }
 
-        if((<HTMLFormElement>document.getElementById('hdnModificar')).value)
+                // let fotoPath = '../Fotos/' + (<HTMLFormElement>document.getElementById('numDni')).value + '-' + (<HTMLFormElement>document.getElementById('txtApellido')).value + '.' + (<HTMLFormElement>document.getElementById('Foto')).value.split('.')[1];
+                // let newEmpleado = '<span style="display:flex;justify-content:space-between;align-items:center;">';
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numDni')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('txtNombre')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('txtApellido')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('cboSexo')).value + " - ";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numLegajo')).value + " - $";
+                // newEmpleado += (<HTMLFormElement>document.getElementById('numSueldo')).value + " - ";
+                // newEmpleado += Turno + " - ";
+                // newEmpleado += fotoPath;
+                // newEmpleado += '<img src="' + fotoPath + '" width="90px" height="90px">';
+                // newEmpleado += '<a href="javascript:void(0);" onclick="eliminarEmpleado(' + (<HTMLFormElement>document.getElementById('numLegajo')).value + ', this)" class="eliminar">Eliminar</a>';
+                // newEmpleado += '<input type="button" value="Modificar" class="modificar" onclick="modificarEmpleado(' + (<HTMLFormElement>document.getElementById('numDni')).value + ', this)">';
+                // newEmpleado += '</span>';
+                
+                // (<HTMLFormElement>document.getElementsByClassName('empleados')[0]).insertAdjacentHTML('beforeend', newEmpleado);
+            }
+        });
+
+        if($('#hdnModificar').val() === 'true' || $('#hdnModificar').val() === '1')
         {
             let empleados = (<HTMLFormElement>document.getElementsByClassName('empleados')[0]).children;
 
